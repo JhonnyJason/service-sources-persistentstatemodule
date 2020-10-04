@@ -56,4 +56,9 @@ persistentstatemodule.save = (label, content) ->
     # log "greate success!"
     return
 
+persistentstatemodule.uncache = (label) ->
+    delete savedMap[label]
+    return
+
+
 module.exports = persistentstatemodule
