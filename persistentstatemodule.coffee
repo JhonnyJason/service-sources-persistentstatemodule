@@ -38,7 +38,7 @@ persistentstatemodule.load = (label) ->
     log "persistentstatemodule.load"
     path = getPath(label)
     state = {}
-    try 
+    try
         contentString = fs.readFileSync(path, "utf-8")
         savedMap[label] = contentString
         state = JSON.parse(contentString)
