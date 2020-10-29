@@ -45,11 +45,13 @@ backup = (path) ->
     return
 
 loadBackup = (label) ->
+    log "loadBackup"
     path = getPath(label)
     backupPath = getBackupPath(path)
     state = {}
     try
         contentString = fs.readFileSync(backupPath, "utf-8")
+        fs.writeFileSync(path, contentString)
         savedMap[label] = contentString
         state = JSON.parse(contentString)
     catch err
