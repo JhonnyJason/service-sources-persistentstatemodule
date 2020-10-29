@@ -34,6 +34,7 @@ getPath = (label) ->
     return path
 
 ############################################################
+#region exposedFunctions
 persistentstatemodule.load = (label) ->
     log "persistentstatemodule.load"
     path = getPath(label)
@@ -60,5 +61,6 @@ persistentstatemodule.uncache = (label) ->
     delete savedMap[label]
     return
 
+#endregion
 
 module.exports = persistentstatemodule
