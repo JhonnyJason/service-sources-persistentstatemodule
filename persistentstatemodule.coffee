@@ -25,6 +25,7 @@ persistentstatemodule.initialize = () ->
     return
 
 ############################################################
+#region internalFunctions
 getPath = (label) ->
     # log "getPath"
     filename = label+".json"
@@ -32,6 +33,34 @@ getPath = (label) ->
     path = pathModule.resolve(process.cwd(), relative, filename)
     # log path
     return path
+
+############################################################
+#region backupFunctions
+getBackupPath = (path) -> path+".backup"
+
+backup = (path) ->
+    backupPath = getBackupPath(path)
+    try fs.copyFileSync(path, backupPath)
+    catch err then log err.stack
+    return
+
+loadBackup = (label) ->
+    path = getPath(label)
+    backupPath = getBackupPath(path)
+    state = {}
+    try
+        contentString = fs.readFileSync(backupPath, "utf-8")
+        savedMap[label] = contentString
+        state = JSON.parse(contentString)
+    catch err
+        log err.stack
+        delete savedMap[label]
+        return {}
+    return state
+    
+#endregion
+
+#endregion
 
 ############################################################
 #region exposedFunctions
@@ -43,7 +72,7 @@ persistentstatemodule.load = (label) ->
         contentString = fs.readFileSync(path, "utf-8")
         savedMap[label] = contentString
         state = JSON.parse(contentString)
-    catch err then log err
+    catch err then return loadBackup(label)
     return state
 
 persistentstatemodule.save = (label, content) ->
@@ -53,7 +82,7 @@ persistentstatemodule.save = (label, content) ->
     if savedMap[label]? and savedMap[label] == stringContent then return
     # log "is being saved.."
     savedMap[label] = stringContent
-    fs.writeFile(path, stringContent, ()->return )
+    fs.writeFile(path, stringContent, () -> backup(path))
     # log "greate success!"
     return
 
