@@ -1,4 +1,3 @@
-persistentstatemodule = {name: "persistentstatemodule"}
 ############################################################
 #region printLogFunctions
 log = (arg) ->
@@ -10,15 +9,15 @@ print = (arg) -> console.log(arg)
 #endregion
 
 ############################################################
-pathModule = require("path")
-fs = require("fs")
+import pathModule from "path"
+import fs from "fs"
 
 ############################################################
 savedMap = {}
 
 ############################################################
-persistentstatemodule.initialize = () ->
-    log "persistentstatemodule.initialize"
+export initialize = () ->
+    log "export initialize"
     relative = allModules.configmodule.persistentStateRelativeBasePath
     path = pathModule.resolve(process.cwd(), relative)
     fs.mkdirSync(path) unless fs.existsSync(path)
@@ -66,8 +65,8 @@ loadBackup = (label) ->
 
 ############################################################
 #region exposedFunctions
-persistentstatemodule.load = (label) ->
-    log "persistentstatemodule.load"
+export load = (label) ->
+    log "export load"
     path = getPath(label)
     state = {}
     try
@@ -77,8 +76,8 @@ persistentstatemodule.load = (label) ->
     catch err then return loadBackup(label)
     return state
 
-persistentstatemodule.save = (label, content) ->
-    log "persistentstatemodule.save"
+export save = (label, content) ->
+    log "export save"
     path = getPath(label)
     stringContent = JSON.stringify(content, null, 4)
     if savedMap[label]? and savedMap[label] == stringContent then return
@@ -88,10 +87,8 @@ persistentstatemodule.save = (label, content) ->
     # log "greate success!"
     return
 
-persistentstatemodule.uncache = (label) ->
+export uncache = (label) ->
     delete savedMap[label]
     return
 
 #endregion
-
-module.exports = persistentstatemodule
