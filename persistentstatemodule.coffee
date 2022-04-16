@@ -66,7 +66,7 @@ loadBackup = (label) ->
 ############################################################
 #region exposedFunctions
 export load = (label) ->
-    log "export load"
+    log "load"
     path = getPath(label)
     state = {}
     try
@@ -77,7 +77,7 @@ export load = (label) ->
     return state
 
 export save = (label, content) ->
-    log "export save"
+    log "save"
     path = getPath(label)
     stringContent = JSON.stringify(content, null, 4)
     if savedMap[label]? and savedMap[label] == stringContent then return
@@ -89,6 +89,14 @@ export save = (label, content) ->
 
 export uncache = (label) ->
     delete savedMap[label]
+    return
+
+export remove = (label) ->
+    path = getPath(label)
+    backupPath = getBackupPath(label)
+    delete savedMap[label]
+    fs.unlink(path, () -> return)
+    fs.unlink(backupPath, () -> return)
     return
 
 #endregion
